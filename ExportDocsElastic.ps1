@@ -35,7 +35,7 @@ for ($i=0 ; $i -le $numeroIteraciones; $i++ ){
     `n  ]
     `n}"
 
-    $response = Invoke-RestMethod 'http://colabrpa02:47599/audit_logs*/_search' -Method 'POST' -Headers $headers -Body $body
+    $response = Invoke-RestMethod 'http://hostname:port/indice/_search' -Method 'POST' -Headers $headers -Body $body
     $response.hits.hits._source | Export-Csv -Path "Path\file.csv" -Append
     $BuscarDespues = $response.hits.hits.sort[10000-1]
 }
