@@ -8,7 +8,7 @@ $headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
 $headers.Add("Content-Type", "application/json")
 
     $body = "{
-    `n  `"size`": 1,    
+    `n  `"size`": 1,
     `n  `"sort`": [ 
     `n    {`"createdOn`": `"asc`"}
     `n  ]
@@ -17,8 +17,6 @@ $headers.Add("Content-Type", "application/json")
     $response = Invoke-RestMethod 'http://hostname:port/indice/_search' -Method 'POST' -Headers $headers -Body $body
     $response.hits.hits._source | Export-Csv -Path "C:\Users\co-adm-luisggaleano\Desktop\audit01.csv" -Append
     $BuscarDespues = $response.hits.hits.sort
-
-
 
 for ($i=0 ; $i -le $numeroIteraciones; $i++ ){
 
