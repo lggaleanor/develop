@@ -1,4 +1,16 @@
-$TotalDocuments = Invoke-RestMethod 'http://hostname:port/indice/_count' -Method 'GET' -Headers $headers
+Param(
+    [Parameter(Mandatory=$true)]
+    [String] $urlElastic , # URL de elastic junto con el puerto http://hostname:port
+    [Parameter(Mandatory=$true)]
+    [String] $nombreIndice  ,
+    [Parameter(Mandatory = $true)]
+    [String] $pathCSV
+)
+
+$urlElasticCount = $urlElastic+'/'+ $nombreIndice + '/_count'
+$urlElasticSearch = $urlElastic+'/'+ $nombreIndice + '/_search'
+
+$TotalDocuments = Invoke-RestMethod $urlElasticCount -Method 'GET' -Headers $headers
 $TotalDocuments = $TotalDocuments.count
 
 $numeroIteraciones = $TotalDocuments/10000
@@ -14,8 +26,8 @@ $headers.Add("Content-Type", "application/json")
     `n  ]
     `n}"
 
-    $response = Invoke-RestMethod 'http://hostname:port/indice/_search' -Method 'POST' -Headers $headers -Body $body
-    $response.hits.hits._source | Export-Csv -Path "C:\Users\co-adm-luisggaleano\Desktop\audit01.csv" -Append
+    $response = Invoke-RestMethod $urlElasticSearch -Method 'POST' -Headers $headers -Body $body
+    $response.hits.hits._source | Export-Csv -Path $pathCSV -Append
     $BuscarDespues = $response.hits.hits.sort
 
 for ($i=0 ; $i -le $numeroIteraciones; $i++ ){
@@ -33,7 +45,7 @@ for ($i=0 ; $i -le $numeroIteraciones; $i++ ){
     `n  ]
     `n}"
 
-    $response = Invoke-RestMethod 'http://hostname:port/indice/_search' -Method 'POST' -Headers $headers -Body $body
-    $response.hits.hits._source | Export-Csv -Path "Path\file.csv" -Append
+    $response = Invoke-RestMethod $urlElasticSearch -Method 'POST' -Headers $headers -Body $body
+    $response.hits.hits._source | Export-Csv -Path $pathCSV -Append
     $BuscarDespues = $response.hits.hits.sort[10000-1]
 }
